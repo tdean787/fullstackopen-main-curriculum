@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 
-const Hello = (props) => {
+//destructuring. take props passed in directly and assign properties
+const Hello = ({ name, age }) => {
+  const bornYear = () => {
+    const yearNow = new Date().getFullYear();
+    return yearNow - age;
+  };
   return (
     <div>
       <p>
         {" "}
-        Hello {props.name}. Apparently, you are {props.age} years old.{" "}
+        Hello {name}. Apparently, you are {age} years old.{" "}
       </p>
+      <p>Maybe you were born in {bornYear()}?</p>
     </div>
   );
 };
@@ -21,62 +27,97 @@ const Part = (props) => {
   );
 };
 
-const Header = () => {
-  const course = "Half Stack application development";
+const Header = (props) => {
   return (
     <div>
-      <h1> {course}</h1>
+      <h1> {props.course}</h1>
     </div>
   );
 };
 
-const Content = () => {
-  const part1 = "Fundamentals of React";
-  const exercises1 = 10;
-  const part2 = "Using props to pass data";
-  const exercises2 = 7;
-  const part3 = "State of a component";
-  const exercises3 = 14;
+const Content = (props) => {
+  const list = document.querySelector(".list");
 
   return (
     <div>
-      <Part body={part1} exercises={exercises1} />
-      <Part body={part2} exercises={exercises2} />
-      <Part body={part3} exercises={exercises3} />
+      <ul class="list">
+        {props.parts.forEach((element) => {
+          <Part body={element.name} exercises={element.exercise} />;
+        })}
+        <Part body={props.parts[0].name} exercises={props.parts[0].exercises} />
+        <Part body={props.parts[1].name} exercises={props.parts[1].exercises} />
+        <Part body={props.parts[2].name} exercises={props.parts[2].exercises} />
+      </ul>
     </div>
   );
 };
 
 const Total = (props) => {
+  let sum = 0;
   return (
     <div>
       <p>
-        Number of exercises{" "}
-        {props.exercises1 + props.exercises2 + props.exercises3}
+        Number of exercises
+        {props.parts.forEach((el) => {
+          sum += el.exercises;
+        })}
+        {sum}
       </p>
     </div>
   );
 };
 
-const App = () => {
+const Display = ({ counter }) => <div>{counter}</div>;
+
+const Button = ({ handleClick, text }) => (
+  <button onClick={handleClick}>{text}</button>
+);
+const App = (props) => {
+  const [counter, setCounter] = useState(0);
+
+  const increaseOne = () => setCounter(counter + 1);
+
+  const setZero = () => setCounter(0);
+
+  // setTimeout(() => setCounter(counter + 1), 1000);
+  const course = {
+    name: "Half Stack application development",
+    parts: [
+      {
+        name: "Fundamentals of React",
+        exercises: 10,
+      },
+      {
+        name: "Using props to pass data",
+        exercises: 7,
+      },
+      {
+        name: "State of a component",
+        exercises: 14,
+      },
+    ],
+  };
+
   const now = new Date();
   const a = 10;
   const b = 20;
   const name = "Severus";
   const age = 47;
-  console.log("hello");
 
   return (
     <div>
-      <Header />
-      <Content />
-      <Total exercises1={10} exercises2={7} exercises3={14} />
-      <Hello name="Taylor" age={95} />
+      <Header course={course.name} />
+      <Content parts={course.parts} />
+      <Total parts={course.parts} />
       <Hello name={name} age={age} />
       <p>It is now {now.toString()}</p>
       <p>
         {a} + {b} equals {a + b}
       </p>
+
+      <Button handleClick={increaseOne} text="Add" />
+      <Button handleClick={setZero} text="Reset" />
+      <Display counter={counter} />
     </div>
   );
 };
