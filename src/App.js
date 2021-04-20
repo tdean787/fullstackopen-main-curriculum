@@ -1,117 +1,140 @@
 import React, { useState } from "react";
+import Course from "./components/Course";
+import Note from "./components/Note";
 
-const Button = ({ handleClick, text }) => (
-  <button onClick={handleClick}>{text}</button>
-);
+// const Part = (props) => {
+//   return (
+//     <div>
+//       <p>
+//         {props.body} = {props.exercises}
+//       </p>
+//     </div>
+//   );
+// };
 
-const Statistic = (props) => {
-  return (
-    <tr>
-      <td> {props.text}</td>
-      <td>{props.value}</td>
-    </tr>
-  );
-};
-
-const Statistics = (props) => {
-  //   if (!props.positive) {
-  //     return <p> No feedback given </p>;
-  //   }
+const Header = ({ name }) => {
   return (
     <div>
-      <table>
-        <tbody>
-          <Statistic text="Average" value={props.average} />
-          <Statistic text="Percent positive" value={props.positive} />
-          <Statistic text="Good" value={props.good} />
-          <Statistic text="Neutral" value={props.neutral} />
-          <Statistic text="Bad" value={props.bad} />
-          <Statistic text="Total" value={props.total} />
-        </tbody>
-      </table>
+      <h1> {name}</h1>
     </div>
   );
 };
 
-const App = () => {
-  // save clicks of each button to its own state
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
+// const Content = (props) => {
+//   return (
+//     <div>
+//       <ul class="list">
+//         {props.parts.forEach((element) => {
+//           <Part body={element.name} exercises={element.exercise} />;
+//         })}
+//         <Part body={props.parts[0].name} exercises={props.parts[0].exercises} />
+//         <Part body={props.parts[1].name} exercises={props.parts[1].exercises} />
+//         <Part body={props.parts[2].name} exercises={props.parts[2].exercises} />
+//       </ul>
+//     </div>
+//   );
+// };
 
-  const total = good + bad + neutral;
+// const Total = (props) => {
+//   const sum = props.course
+//     .map((element) => element.exercises)
+//     .reduce((a, b) => a + b);
+//   return (
+//     <div>
+//       <p>
+//         Number of exercises:
+//         {sum}
+//       </p>
+//     </div>
+//   );
+// };
 
-  const positive = (good / total) * 100;
+const History = (props) => {
+  if (props.allClicks.length === 0) {
+    return <div>The app is used by pressing buttons</div>;
+  }
+  return <div>button press history: {props.allClicks.join(" ")}</div>;
+};
 
-  const increaseGood = () => setGood(good + 1);
+const App = (props) => {
+  const [notes, setNotes] = useState(props.notes);
+  const [newNote, setNewNote] = useState("a new note");
 
-  const increaseBad = () => setBad(bad + 1);
-
-  const increaseNeutral = () => setNeutral(neutral + 1);
-
-  const anecdotes = [
-    "If it hurts, do it more often",
-    "Adding manpower to a late software project makes it later!",
-    "The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
-    "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
-    "Premature optimization is the root of all evil.",
-    "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
+  const courses = [
+    {
+      name: "Half Stack application development",
+      id: 1,
+      parts: [
+        {
+          name: "Fundamentals of React",
+          exercises: 10,
+        },
+        {
+          name: "Using props to pass data",
+          exercises: 7,
+        },
+        {
+          name: "State of a component",
+          exercises: 14,
+        },
+      ],
+    },
+    {
+      name: "Node.js",
+      id: 2,
+      parts: [
+        {
+          name: "Routing",
+          exercises: 3,
+          id: 1,
+        },
+        {
+          name: "Middlewares",
+          exercises: 7,
+          id: 2,
+        },
+      ],
+    },
   ];
 
-  const voteArray = Array.apply(null, new Array(anecdotes.length)).map(
-    Number.prototype.valueOf,
-    0
-  );
+  const addNote = (event) => {
+    event.preventDefault();
+    console.log("click", event.target);
+    const noteObject = {
+      content: newNote,
+      date: new Date().toISOString(),
+      important: Math.random() < 0.5,
+      id: notes.length + 1,
+    };
 
-  const [selected, isSelected] = useState(0);
-  const [votes, setVotes] = useState(voteArray);
-  const randomizeAnecdote = (max) => {
-    isSelected(Math.floor(Math.random() * anecdotes.length));
-    console.log(selected);
+    setNotes(notes.concat(noteObject));
+    setNewNote("");
   };
 
-  const copy = [...voteArray];
-
-  const handleVote = () => {
-    const newVoteArray = [...votes];
-    newVoteArray[selected] += 1;
-    console.log(newVoteArray);
-    setVotes(newVoteArray);
+  const handleNoteChange = (event) => {
+    setNewNote(event.target.value);
   };
-
-  const highestVoteIndex = [...votes].indexOf(Math.max(...votes));
-
   return (
     <div>
-      <div>
-        {" "}
-        <h2>FullStackOpen part1 exercises - unicafe</h2>
-        <Button handleClick={increaseGood} text="good" />
-        {good}
-        <Button handleClick={increaseNeutral} text="Neutral" />
-        {neutral}
-        <Button handleClick={increaseBad} text="Bad" />
-        {bad}
-        <Statistics
-          average={(total / 3).toFixed(2)}
-          positive={positive.toFixed(2)}
-          good={good}
-          neutral={neutral}
-          bad={bad}
-          total={total}
-        />
-      </div>
+      <h1>Courses</h1>
+      {/* <Total course={course.parts} /> */}
+      <ul>
+        {courses.map((element) => {
+          return <Course name={element.name} parts={element.parts} />;
+        })}
+        {/* // <Course name={element.name} /> */}
+      </ul>
 
-      <div>
-        <h2>part2 - anecdotes</h2>
-        <p>{anecdotes[selected]}</p>
-        <button onClick={handleVote}>Vote +1</button>
-        <button onClick={randomizeAnecdote}>Next anecdote</button>
-        <h2>max vote anecdote</h2>
-        <p>{Math.max(...votes)}</p>
-        {/* {[[...votes].indexOf(Math.max(...votes))]} */}
-        {anecdotes[highestVoteIndex]}
-      </div>
+      <ul>
+        {notes.map((note) => (
+          <Note note={note.content} key={note.id} />
+        ))}
+      </ul>
+
+      <form onSubmit={addNote}>
+        <input onChange={handleNoteChange} value={newNote} />
+        <button type="submit">Save Note</button>
+      </form>
     </div>
   );
 };
