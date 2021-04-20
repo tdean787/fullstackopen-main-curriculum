@@ -58,9 +58,14 @@ const History = (props) => {
 
 const App = (props) => {
   const [notes, setNotes] = useState(props.notes);
-  const [newNote, setNewNote] = useState("a new note");
+  const [newNote, setNewNote] = useState("");
   const [showAll, setShowAll] = useState(true);
 
+  const [persons, setPersons] = useState([
+    { name: "Taylor", id: "Taylor", phone: "123-456-7890" },
+  ]);
+
+  const [newName, setNewName] = useState({ name: "", phone: "" });
   const courses = [
     {
       name: "Half Stack application development",
@@ -100,14 +105,12 @@ const App = (props) => {
 
   const addNote = (event) => {
     event.preventDefault();
-    console.log("click", event.target);
     const noteObject = {
       content: newNote,
       date: new Date().toISOString(),
       important: Math.random() < 0.5,
       id: notes.length + 1,
     };
-
     setNotes(notes.concat(noteObject));
     setNewNote("");
   };
@@ -120,44 +123,94 @@ const App = (props) => {
     ? notes
     : notes.filter((note) => note.important === true);
 
+  const addPerson = (event) => {
+    event.preventDefault();
+
+    const checkName = persons.map((person) => person.name);
+    const personObj = {
+      name: newName.name,
+      id: newName.name,
+      phone: newName.phone,
+    };
+
+    if (checkName.includes(newName)) {
+      alert(`${newName} is already in the phonebook`);
+      return;
+    } else {
+      setPersons(persons.concat(personObj));
+      setNewName("");
+      Array.from(document.querySelectorAll("input")).forEach(
+        (input) => (input.value = "")
+      );
+    }
+  };
+
+  const personChange = (event) => {
+    setNewName({ ...newName, name: event.target.value });
+  };
+
+  const phoneChange = (event) => {
+    setNewName({ ...newName, phone: event.target.value });
+  };
+
   return (
     <div>
-      <h1>Courses</h1>
-      {/* <Total course={course.parts} /> */}
-      <ul>
-        {courses.map((element) => {
-          return (
-            <Course
-              key={element.id}
-              name={element.name}
-              parts={element.parts}
-            />
-          );
-        })}
-        {/* // <Course name={element.name} /> */}
-      </ul>
-
-      <ul>
-        {notes.map((note) => (
-          <Note note={note} key={note.id} />
-        ))}
-      </ul>
-      {/* {notesToShow.map((note) => note.content)} */}
-
-      <h2> Notes </h2>
       <div>
-        <button onClick={() => setShowAll(!showAll)}>
-          show {showAll ? "important" : "all"}
-        </button>
-      </div>
-      {notesToShow.map((note) => (
-        <Note key={note.id} note={note} />
-      ))}
+        {/* <h1>Courses</h1>
+        <ul>
+          {courses.map((element) => {
+            return (
+              <Course
+                key={element.id}
+                name={element.name}
+                parts={element.parts}
+              />
+            );
+          })}
 
-      <form onSubmit={addNote}>
-        <input onChange={handleNoteChange} value={newNote} />
-        <button type="submit">Save Note</button>
-      </form>
+        </ul> */}
+
+        {/* <ul>
+          {notes.map((note) => (
+            <Note note={note} key={note.id} />
+          ))}
+        </ul> */}
+
+        <h2> Notes </h2>
+        <div>
+          <button onClick={() => setShowAll(!showAll)}>
+            show {showAll ? "important" : "all"}
+          </button>
+        </div>
+        {notesToShow.map((note) => (
+          <Note key={note.id} note={note} />
+        ))}
+
+        <form onSubmit={addNote}>
+          <input onChange={handleNoteChange} value={newNote} />
+          <button type="submit">Save Note</button>
+        </form>
+      </div>
+      <div>
+        <h2>Phonebook</h2>
+        <form onSubmit={addPerson}>
+          <div>
+            name: <input onChange={personChange} />
+          </div>
+          <div>
+            phone: <input onChange={phoneChange}></input>
+          </div>
+          <div>
+            <button type="submit">add</button>
+          </div>
+        </form>
+        <h2>Numbers</h2>
+        {persons.map((person) => (
+          <p>
+            {person.name} - {person.phone}
+          </p>
+        ))}
+      </div>
     </div>
   );
 };
