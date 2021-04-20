@@ -59,6 +59,7 @@ const History = (props) => {
 const App = (props) => {
   const [notes, setNotes] = useState(props.notes);
   const [newNote, setNewNote] = useState("a new note");
+  const [showAll, setShowAll] = useState(true);
 
   const courses = [
     {
@@ -114,22 +115,44 @@ const App = (props) => {
   const handleNoteChange = (event) => {
     setNewNote(event.target.value);
   };
+
+  const notesToShow = showAll
+    ? notes
+    : notes.filter((note) => note.important === true);
+
   return (
     <div>
       <h1>Courses</h1>
       {/* <Total course={course.parts} /> */}
       <ul>
         {courses.map((element) => {
-          return <Course name={element.name} parts={element.parts} />;
+          return (
+            <Course
+              key={element.id}
+              name={element.name}
+              parts={element.parts}
+            />
+          );
         })}
         {/* // <Course name={element.name} /> */}
       </ul>
 
       <ul>
         {notes.map((note) => (
-          <Note note={note.content} key={note.id} />
+          <Note note={note} key={note.id} />
         ))}
       </ul>
+      {/* {notesToShow.map((note) => note.content)} */}
+
+      <h2> Notes </h2>
+      <div>
+        <button onClick={() => setShowAll(!showAll)}>
+          show {showAll ? "important" : "all"}
+        </button>
+      </div>
+      {notesToShow.map((note) => (
+        <Note key={note.id} note={note} />
+      ))}
 
       <form onSubmit={addNote}>
         <input onChange={handleNoteChange} value={newNote} />
