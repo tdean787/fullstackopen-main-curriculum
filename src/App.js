@@ -63,9 +63,16 @@ const App = (props) => {
 
   const [persons, setPersons] = useState([
     { name: "Taylor", id: "Taylor", phone: "123-456-7890" },
+    { name: "Ada Lovelace", phone: "39-44-5323523" },
+    { name: "Dan Abramov", phone: "12-43-234345" },
+    { name: "Mary Poppendieck", phone: "39-23-6423122" },
   ]);
 
-  const [newName, setNewName] = useState({ name: "", phone: "" });
+  //initialize state of filteredPersons as array of objects
+  const [filteredPersons, setFilteredPersons] = useState([
+    { name: "", id: "", phone: "" },
+  ]);
+  const [newName, setNewName] = useState([]);
   const courses = [
     {
       name: "Half Stack application development",
@@ -153,6 +160,16 @@ const App = (props) => {
     setNewName({ ...newName, phone: event.target.value });
   };
 
+  //when filter input changes call function and set the state of filtered persons
+  //to any names which contain string in input
+  const filterPersons = (event) => {
+    console.log(event.target.value);
+    const fPersons = persons.filter((person) =>
+      person.name.toLowerCase().includes(event.target.value.toLowerCase())
+    );
+    setFilteredPersons(fPersons);
+    console.log(fPersons);
+  };
   return (
     <div>
       <div>
@@ -193,6 +210,16 @@ const App = (props) => {
       </div>
       <div>
         <h2>Phonebook</h2>
+        <div>
+          filter shown with: <input onChange={filterPersons} />
+        </div>
+        {/* render a list of p tags with the filtered person object array. list name and number*/}
+        {filteredPersons.map((person) => (
+          <p>
+            {person.name} : {person.phone}
+          </p>
+        ))}
+
         <form onSubmit={addPerson}>
           <div>
             name: <input onChange={personChange} />

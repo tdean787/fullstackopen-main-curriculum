@@ -6,4 +6,7 @@ const notes = [
   { content: "javascript", id: 2, important: false },
 ];
 
-ReactDOM.render(<App notes={notes} />, document.getElementById("root"));
+ReactDOM.render(
+  <App notes={notes} key={notes} />,
+  document.getElementById("root")
+);
