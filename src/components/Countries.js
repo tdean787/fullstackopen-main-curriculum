@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Country from "../components/Country";
+import SingleCountry from "../components/SingleCountry";
 import axios from "axios";
 
 const Countries = () => {
@@ -21,16 +22,7 @@ const Countries = () => {
         {" "}
         {countries.map((country) => (
           <div>
-            <p>Capital: {country.capital}</p>
-            <p>Population: {country.population}</p>
-
-            <strong>Languages spoken:</strong>
-            {country.languages.map((language) => (
-              <li> {language.name} </li>
-            ))}
-
-            <p>{country.name}</p>
-            <img style={{ width: 300 }} src={country.flag}></img>
+            <SingleCountry country={country} />
           </div>
         ))}
       </div>
