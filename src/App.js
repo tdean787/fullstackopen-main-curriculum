@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import Persons from "./components/Persons";
+import Countries from "./components/Countries";
 import Form from "./components/Form";
+import axios from "axios";
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: "Taylor", id: "Taylor", phone: "123-456-7890" },
-    { name: "Ada Lovelace", phone: "39-44-5323523" },
-    { name: "Dan Abramov", phone: "12-43-234345" },
-    { name: "Mary Poppendieck", phone: "39-23-6423122" },
+    { name: "hmmm...?", id: "Taylor", phone: "123-456-7890" },
   ]);
+
+  useEffect(() => {
+    console.log("effect");
+    axios.get("http://localhost:3001/persons").then((response) => {
+      setPersons(response.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    axios.get("https://restcountries.eu/rest/v2/name/{name}");
+  });
 
   const [newName, setNewName] = useState([]);
 
@@ -52,6 +62,7 @@ const App = () => {
       />
       <Persons persons={persons} />
       <Filter persons={persons} />
+      <Countries />
     </div>
   );
 };
