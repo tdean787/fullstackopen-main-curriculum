@@ -1,14 +1,13 @@
+import axios from "axios";
 import React from "react";
 
-const Persons = ({ persons }) => {
+const Persons = ({ person, deletePerson }) => {
   return (
     <div>
-      <h3>People</h3>
-      {persons.map((person) => (
-        <p key={person.name}>
-          {person.name} : {person.phone}
-        </p>
-      ))}
+      <p>
+        {person.name} - {person.phone}{" "}
+        <button onClick={() => deletePerson(person.id)}> Delete </button>
+      </p>
     </div>
   );
 };
